@@ -165,14 +165,27 @@ body {
     box-shadow: 0 0px 0 #1c6899;
 }
 
+/* ====================================================
+   CẬP NHẬT TRẠNG THÁI SÁNG/TỐI CỦA NÚT UNDO/REDO
+==================================================== */
+/* Khi hoạt động (Sáng) */
 .btn-red {
-    background-color: #a35d74; 
-    color: #e5b9c7; 
-    box-shadow: 0 4px 0 #784253;
+    background-color: #f14c4f; 
+    color: #ffffff; 
+    box-shadow: 0 4px 0 #852d1b;
 }
-.btn-red:active {
+.btn-red:active:not(:disabled) {
     transform: translateY(4px);
-    box-shadow: 0 0px 0 #784253;
+    box-shadow: 0 0px 0 #852d1b;
+}
+
+/* Khi bị vô hiệu hóa (Tối) */
+.btn-red:disabled {
+    background-color: #90697c; 
+    color: #a2bcd2; 
+    box-shadow: 0 4px 0 #50555e;
+    cursor: not-allowed;
+    transform: none; /* Không cho lún xuống khi bấm */
 }
 
 .image-section-title {
@@ -278,7 +291,7 @@ body {
     height: 100%;
     object-fit: cover; 
     border-radius: 12px; 
-    background-color: white; /* Thêm nền trắng đề phòng ảnh bị trong suốt */
+    background-color: white; 
 }
 
 .cell.matched { 
@@ -304,8 +317,8 @@ body {
     <label class="text-label">Cột: <input type="number" id="cols" min="1"></label>
     
     <button onclick="createGrid(false)" class="btn-action btn-blue">🔄 Tạo bàn</button>
-    <button onclick="undo()" class="btn-action btn-red">↩️ Undo</button>
-    <button onclick="redo()" class="btn-action btn-red">↪️ Redo</button>
+    <button id="btnUndo" onclick="undo()" class="btn-action btn-red" disabled>↩️ Undo</button>
+    <button id="btnRedo" onclick="redo()" class="btn-action btn-red" disabled>↪️ Redo</button>
 </div>
 
 <div class="image-section-title">Chọn biểu tượng:</div>
@@ -313,23 +326,17 @@ body {
 <div id="grid" class="grid"></div>
 
 <script>
-// =========================================================
-// KHU VỰC CÀI ĐẶT ẢNH MẶC ĐỊNH SẴN CÓ
-// Để thay bằng ảnh thật của bạn, hãy sửa các đoạn mã dưới đây
-// thành tên file ảnh của bạn. VD: "anh1.png", "icon2.jpg"
-// =========================================================
 const defaultImages = [
-    "File anh/1.png",
-    "File anh/2.png",
-    "File anh/3.png",
-    "File anh/4.png",
-    "File anh/5.png",
-    "File anh/6.png",
-    "File anh/7.png",
-    "File anh/8.png",
-    "File anh/9.png"
+    "Anh/1.png",
+    "Anh/2.png",
+    "Anh/3.png",
+    "Anh/4.png",
+    "Anh/5.png",
+    "Anh/6.png",
+    "Anh/7.png",
+    "Anh/8.png",
+    "Anh/9.png"
 ];
-// =========================================================
 
 let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
 let currentSheet = 0;
@@ -343,7 +350,6 @@ const sheetBar = document.getElementById("sheetBar");
 const rowsInput = document.getElementById("rows");
 const colsInput = document.getElementById("cols");
 
-// Đảm bảo Acc cũ cũng có sẵn ảnh nếu chưa có
 sheets.forEach(s => {
     if (!s.images || s.images.length === 0) {
         s.images = [...defaultImages];
@@ -352,6 +358,14 @@ sheets.forEach(s => {
 
 function save() {
     localStorage.setItem("sheets", JSON.stringify(sheets));
+}
+
+// Cập nhật trạng thái màu sắc của 2 nút bấm
+function updateUndoRedoButtons() {
+    const btnUndo = document.getElementById("btnUndo");
+    const btnRedo = document.getElementById("btnRedo");
+    if (btnUndo) btnUndo.disabled = (undoStack.length === 0);
+    if (btnRedo) btnRedo.disabled = (redoStack.length === 0);
 }
 
 function renderSheets() {
@@ -380,7 +394,7 @@ function addSheet() {
         name: "Acc " + (sheets.length + 1),
         rows: 4, cols: 5,
         cells: [], 
-        images: [...defaultImages] // Gắn luôn danh sách ảnh mặc định vào Acc mới
+        images: [...defaultImages]
     });
     currentSheet = sheets.length - 1;
     save(); renderSheets(); loadSheet();
@@ -415,6 +429,7 @@ function loadSheet() {
     redoStack = [];
 
     createGrid(true);
+    updateUndoRedoButtons(); // Cập nhật nút ngay khi load
     renderSheets();
 }
 
@@ -426,7 +441,6 @@ function addImage(src) {
     img.src = src;
     img.onclick = () => selectImage(img);
 
-    // Đã xóa nút "Dấu X" đỏ để tránh vô tình xóa mất ảnh cài sẵn
     box.append(img);
     imageBar.appendChild(box);
 }
@@ -477,6 +491,8 @@ function createGrid(load = false) {
         cell.onclick = () => place(i);
         grid.appendChild(cell);
     });
+
+    updateUndoRedoButtons(); // Đảm bảo nút được làm mới
 }
 
 function place(i) {
@@ -502,6 +518,7 @@ function place(i) {
 
     match(selectedImage);
     save(); 
+    updateUndoRedoButtons(); // Cập nhật nút sau khi đặt thẻ
 }
 
 function match(src) {
@@ -561,6 +578,7 @@ function undo() {
         sheets[currentSheet].cells = JSON.parse(undoStack.pop());
         save(); 
         updateGridDOM(); 
+        updateUndoRedoButtons(); // Cập nhật sau khi Hoàn tác
     }
 }
 
@@ -571,6 +589,7 @@ function redo() {
         sheets[currentSheet].cells = JSON.parse(redoStack.pop());
         save(); 
         updateGridDOM();
+        updateUndoRedoButtons(); // Cập nhật sau khi Làm lại
     }
 }
 
@@ -585,7 +604,7 @@ document.addEventListener("keydown", e => {
     }
 });
 
-// Chạy khởi tạo
+// Chạy khởi tạo ban đầu
 if (!sheets.length) addSheet();
 else { renderSheets(); loadSheet(); }
 </script>
