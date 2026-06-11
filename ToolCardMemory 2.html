@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tool Card Memory</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+    background-color: #5aa8e8; 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpath fill='%234591d3' opacity='0.6' d='M60 80a20 20 0 0 1 26-19 32 32 0 0 1 58 12 20 20 0 0 1-5 39H60a20 20 0 0 1 0-40z'/%3E%3Cpath fill='%234591d3' opacity='0.4' d='M150 160a15 15 0 0 1 19-14 24 24 0 0 1 44 9 15 15 0 0 1-4 29h-59a15 15 0 0 1 0-30z'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.header {
+    font-size: 46px; 
+    font-family: 'Arial Black', 'Segoe UI Black', Impact, sans-serif; 
+    font-weight: 900;
+    font-style: italic; 
+    color: #fcfcfc; 
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-shadow: 
+        -2px -2px 0 #3a3a3a,  2px -2px 0 #3a3a3a, -2px  2px 0 #3a3a3a, 2px  2px 0 #3a3a3a,
+        -2px  0   0 #3a3a3a,  2px  0   0 #3a3a3a,  0   -2px 0 #3a3a3a, 0    2px 0 #3a3a3a,
+         0    6px 0 #3a3a3a,  2px  6px 0 #3a3a3a, -2px  6px 0 #3a3a3a;
+}
+
+.sheet-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.sheet {
+    background: #e6e6e6; 
+    color: #666;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 4px 0 #b3b3b3;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.sheet.active {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 4px 0 #cccccc;
+}
+
+.sheet:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #cccccc;
+}
+
+.btn-add-acc {
+    background: #4cd16b;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 4px 0 #38a051;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-add-acc:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #38a051;
+}
+
+.btn-delete-acc {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 4px 0 #c0392b;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-delete-acc:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #c0392b;
+}
+
+.controls-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    background: rgba(41, 128, 185, 0.4); 
+    padding: 15px 30px;
+    border-radius: 16px; 
+}
+
+.controls-row label.text-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 900;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
+}
+
+.controls-row input[type="number"] {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 900;
+    text-align: center;
+    width: 40px;
+    outline: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 0 #cccccc;
+    -moz-appearance: textfield; 
+}
+.controls-row input[type="number"]::-webkit-outer-spin-button,
+.controls-row input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    outline: none;
+    border-radius: 10px;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-blue {
+    background-color: #268bcc; 
+    color: white;
+    box-shadow: 0 4px 0 #1c6899;
+}
+.btn-blue:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #1c6899;
+}
+
+.btn-red {
+    background-color: #a35d74; 
+    color: #e5b9c7; 
+    box-shadow: 0 4px 0 #784253;
+}
+.btn-red:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #784253;
+}
+
+.image-section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5); 
+}
+
+.image-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.image-box { position: relative; }
+
+.image-bar img {
+    width: 60px;
+    height: 80px;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    object-fit: cover;
+    transition: 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.image-bar img.selected {
+    border-color: #ffd700; 
+    box-shadow: 0 0 15px #ffd700;
+    transform: translateY(-5px);
+}
+
+.grid {
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.cell {
+    width: 83px;
+    height: 103px;
+    perspective: 1000px; 
+    cursor: pointer;
+}
+
+.cell-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.cell.flipped .cell-inner {
+    transform: rotateY(180deg);
+}
+
+.cell:active .cell-inner {
+    transform: translateY(4px);
+}
+.cell.flipped:active .cell-inner {
+    transform: translateY(4px) rotateY(180deg);
+}
+
+.cell-front, .cell-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; 
+    border-radius: 12px; 
+    box-sizing: border-box;
+}
+
+.cell-front {
+    background-color: #64c2ed; 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='white' stroke-width='6' stroke-linecap='round' fill='none'%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3Cline x1='40' y1='10' x2='40' y2='16'/%3E%3Cline x1='18.8' y1='18.8' x2='23' y2='23'/%3E%3Cline x1='10' y1='40' x2='16' y2='40'/%3E%3Cline x1='56.9' y1='23' x2='61.2' y2='18.8'/%3E%3Cline x1='70' y1='40' x2='64' y2='40'/%3E%3C/g%3E%3Cpath fill='white' d='M35 55 A 15 15 0 0 1 60 40 A 20 20 0 0 1 85 55 A 12 12 0 0 1 75 75 L 30 75 A 18 18 0 0 1 35 55 Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 40px; 
+    border: 4px solid #89d8fb; 
+    box-shadow: 0 5px 0 #3b91c4, inset 0 0 0 2px #ffffff; 
+    transition: box-shadow 0.1s;
+}
+
+.cell:active .cell-front {
+    box-shadow: 0 0px 0 #3b91c4, inset 0 0 0 2px #ffffff;
+}
+
+.cell-back {
+    transform: rotateY(180deg); 
+    background: transparent;
+}
+
+.cell-back img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 12px; 
+    background-color: white; /* Thêm nền trắng đề phòng ảnh bị trong suốt */
+}
+
+.cell.matched { 
+    visibility: hidden; 
+    opacity: 0;
+    transition: opacity 0.3s ease-out, visibility 0.3s;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">Dự báo thời tiết của Windy</div>
+
+<div class="sheet-bar">
+    <div id="sheetBar" style="display: flex; gap: 12px;"></div>
+    <button onclick="addSheet()" class="btn-add-acc">➕ Thêm acc</button>
+    <button onclick="deleteCurrentSheet()" class="btn-delete-acc">🗑️ Xóa acc</button>
+</div>
+
+<div class="controls-row">
+    <label class="text-label">Hàng: <input type="number" id="rows" min="1"></label>
+    <label class="text-label">Cột: <input type="number" id="cols" min="1"></label>
+    
+    <button onclick="createGrid(false)" class="btn-action btn-blue">🔄 Tạo bàn</button>
+    <button onclick="undo()" class="btn-action btn-red">↩️ Undo</button>
+    <button onclick="redo()" class="btn-action btn-red">↪️ Redo</button>
+</div>
+
+<div class="image-section-title">Chọn biểu tượng:</div>
+<div class="image-bar" id="imageBar"></div>
+<div id="grid" class="grid"></div>
+
+<script>
+// =========================================================
+// KHU VỰC CÀI ĐẶT ẢNH MẶC ĐỊNH SẴN CÓ
+// Để thay bằng ảnh thật của bạn, hãy sửa các đoạn mã dưới đây
+// thành tên file ảnh của bạn. VD: "anh1.png", "icon2.jpg"
+// =========================================================
+const defaultImages = [
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🪄%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E⚓%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E☸️%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🛳️%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🎵%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🍷%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🔍%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E🧭%3C/text%3E%3C/svg%3E",
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='80'%3E⛵%3C/text%3E%3C/svg%3E"
+];
+// =========================================================
+
+let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
+let currentSheet = 0;
+let selectedImage = null;
+let undoStack = [], redoStack = [];
+let matchTimeout = null; 
+
+const grid = document.getElementById("grid");
+const imageBar = document.getElementById("imageBar");
+const sheetBar = document.getElementById("sheetBar");
+const rowsInput = document.getElementById("rows");
+const colsInput = document.getElementById("cols");
+
+// Đảm bảo Acc cũ cũng có sẵn ảnh nếu chưa có
+sheets.forEach(s => {
+    if (!s.images || s.images.length === 0) {
+        s.images = [...defaultImages];
+    }
+});
+
+function save() {
+    localStorage.setItem("sheets", JSON.stringify(sheets));
+}
+
+function renderSheets() {
+    sheetBar.innerHTML = "";
+    sheets.forEach((s, i) => {
+        const div = document.createElement("div");
+        div.className = "sheet" + (i === currentSheet ? " active" : "");
+        div.textContent = s.name;
+
+        div.onclick = () => {
+            currentSheet = i;
+            loadSheet();
+        };
+
+        div.ondblclick = () => {
+            const n = prompt("Đổi tên", s.name);
+            if (n) { s.name = n; save(); renderSheets(); }
+        };
+
+        sheetBar.appendChild(div);
+    });
+}
+
+function addSheet() {
+    sheets.push({
+        name: "Acc " + (sheets.length + 1),
+        rows: 4, cols: 5,
+        cells: [], 
+        images: [...defaultImages] // Gắn luôn danh sách ảnh mặc định vào Acc mới
+    });
+    currentSheet = sheets.length - 1;
+    save(); renderSheets(); loadSheet();
+}
+
+function deleteSheet(index) {
+    if (sheets.length === 1) {
+        alert("Phải có ít nhất 1 acc!");
+        return;
+    }
+    if (!confirm("Xóa acc này?")) return;
+
+    sheets.splice(index, 1);
+    if (currentSheet >= sheets.length) currentSheet = sheets.length - 1;
+
+    save(); renderSheets(); loadSheet();
+}
+
+function deleteCurrentSheet() {
+    deleteSheet(currentSheet);
+}
+
+function loadSheet() {
+    const s = sheets[currentSheet];
+    rowsInput.value = s.rows || 4;
+    colsInput.value = s.cols || 5;
+
+    imageBar.innerHTML = "";
+    s.images.forEach(addImage);
+
+    undoStack = [];
+    redoStack = [];
+
+    createGrid(true);
+    renderSheets();
+}
+
+function addImage(src) {
+    const box = document.createElement("div");
+    box.className = "image-box";
+
+    const img = document.createElement("img");
+    img.src = src;
+    img.onclick = () => selectImage(img);
+
+    // Đã xóa nút "Dấu X" đỏ để tránh vô tình xóa mất ảnh cài sẵn
+    box.append(img);
+    imageBar.appendChild(box);
+}
+
+function selectImage(img) {
+    document.querySelectorAll(".image-bar img").forEach(i => i.classList.remove("selected"));
+    img.classList.add("selected");
+    selectedImage = img.src;
+}
+
+function createGrid(load = false) {
+    const s = sheets[currentSheet];
+    if (!load) {
+        s.rows = +rowsInput.value;
+        s.cols = +colsInput.value;
+        s.cells = Array(s.rows * s.cols).fill(null);
+        undoStack = [];
+        redoStack = [];
+        save();
+    }
+
+    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${s.cols}, 83px)`;
+
+    s.cells.forEach((c, i) => {
+        const cell = document.createElement("div");
+        cell.className = "cell" + (c?.img ? " flipped" : "") + (c?.matched ? " matched" : "");
+        
+        const inner = document.createElement("div");
+        inner.className = "cell-inner";
+
+        const front = document.createElement("div");
+        front.className = "cell-front";
+
+        const back = document.createElement("div");
+        back.className = "cell-back";
+        
+        if (c?.img) {
+            const im = document.createElement("img");
+            im.src = c.img;
+            back.appendChild(im);
+        }
+        
+        inner.appendChild(front);
+        inner.appendChild(back);
+        cell.appendChild(inner);
+
+        cell.onclick = () => place(i);
+        grid.appendChild(cell);
+    });
+}
+
+function place(i) {
+    const s = sheets[currentSheet];
+    if (!selectedImage || s.cells[i]) return;
+
+    undoStack.push(JSON.stringify(s.cells));
+    redoStack = [];
+
+    s.cells[i] = { img: selectedImage };
+
+    const cellNodes = document.querySelectorAll('.cell');
+    const targetCell = cellNodes[i];
+    const backDiv = targetCell.querySelector('.cell-back');
+    
+    const im = document.createElement("img");
+    im.src = selectedImage;
+    backDiv.appendChild(im);
+
+    setTimeout(() => {
+        targetCell.classList.add("flipped");
+    }, 10);
+
+    match(selectedImage);
+    save(); 
+}
+
+function match(src) {
+    const s = sheets[currentSheet];
+    const same = s.cells
+        .map((c, i) => ({ c, i }))
+        .filter(o => o.c && o.c.img === src && !o.c.matched);
+
+    if (same.length === 2) {
+        matchTimeout = setTimeout(() => {
+            same.forEach(o => {
+                o.c.matched = true;
+                document.querySelectorAll('.cell')[o.i].classList.add("matched"); 
+            });
+            save(); 
+        }, 500); 
+    }
+}
+
+function updateGridDOM() {
+    const s = sheets[currentSheet];
+    const cellNodes = document.querySelectorAll('.cell');
+
+    s.cells.forEach((c, i) => {
+        const targetCell = cellNodes[i];
+        const backDiv = targetCell.querySelector('.cell-back');
+
+        if (c && c.img) {
+            let imgEl = backDiv.querySelector('img');
+            if (!imgEl) {
+                imgEl = document.createElement("img");
+                backDiv.appendChild(imgEl);
+            }
+            imgEl.src = c.img;
+            targetCell.classList.add("flipped");
+        } else {
+            targetCell.classList.remove("flipped");
+            setTimeout(() => {
+                if (!targetCell.classList.contains("flipped")) {
+                    backDiv.innerHTML = '';
+                }
+            }, 400); 
+        }
+
+        if (c && c.matched) {
+            targetCell.classList.add("matched");
+        } else {
+            targetCell.classList.remove("matched");
+        }
+    });
+}
+
+function undo() {
+    if (undoStack.length) {
+        clearTimeout(matchTimeout); 
+        redoStack.push(JSON.stringify(sheets[currentSheet].cells));
+        sheets[currentSheet].cells = JSON.parse(undoStack.pop());
+        save(); 
+        updateGridDOM(); 
+    }
+}
+
+function redo() {
+    if (redoStack.length) {
+        clearTimeout(matchTimeout);
+        undoStack.push(JSON.stringify(sheets[currentSheet].cells));
+        sheets[currentSheet].cells = JSON.parse(redoStack.pop());
+        save(); 
+        updateGridDOM();
+    }
+}
+
+document.addEventListener("keydown", e => {
+    if (e.ctrlKey && e.key === "z") {
+        e.preventDefault();
+        undo();
+    }
+    if (e.ctrlKey && e.key === "y") {
+        e.preventDefault();
+        redo();
+    }
+});
+
+// Chạy khởi tạo
+if (!sheets.length) addSheet();
+else { renderSheets(); loadSheet(); }
+</script>
+
+</body>
+</html>
