@@ -111,7 +111,7 @@ body {
     border-radius: 16px; 
 }
 
-.controls-row label.text-label {
+.controls-row label {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -120,7 +120,8 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
 }
 
-.controls-row input[type="number"] {
+.controls-row input[type="number"],
+.controls-row input[type="file"] {
     background-color: white;
     color: black;
     border: none;
@@ -128,16 +129,34 @@ body {
     font-size: 18px;
     font-weight: 900;
     text-align: center;
-    width: 40px;
     outline: none;
     border-radius: 10px;
     box-shadow: 0 4px 0 #cccccc;
     -moz-appearance: textfield; 
 }
-.controls-row input[type="number"]::-webkit-outer-spin-button,
-.controls-row input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.controls-row input[type="number"] {
+    width: 50px;
+    cursor: text;
+}
+
+.controls-row input[type="file"] {
+    max-width: 220px;
+    padding: 4px;
+    cursor: default;
+}
+
+.controls-row input[type="file"]::file-selector-button {
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.controls-row button:active {
+    transform: translateY(3px);
+    box-shadow: none;
 }
 
 .btn-action {
@@ -327,15 +346,15 @@ body {
 
 <script>
 const defaultImages = [
-    "Anh/1.png",
-    "Anh/2.png",
-    "Anh/3.png",
-    "Anh/4.png",
-    "Anh/5.png",
-    "Anh/6.png",
-    "Anh/7.png",
-    "Anh/8.png",
-    "Anh/9.png"
+    "File anh/1.png",
+    "File anh/2.png",
+    "File anh/3.png",
+    "File anh/4.png",
+    "File anh/5.png",
+    "File anh/6.png",
+    "File anh/7.png",
+    "File anh/8.png",
+    "File anh/9.png"
 ];
 
 let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
