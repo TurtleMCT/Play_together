@@ -120,44 +120,58 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
 }
 
-.controls-row input[type="number"],
-.controls-row input[type="file"] {
+/* ====================================================
+   CẬP NHẬT: CSS CHO KHỐI TĂNG GIẢM SỐ LƯỢNG (SPINNER)
+==================================================== */
+.spinner-group {
+    display: flex;
+    align-items: center;
     background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 0 #cccccc;
+    padding-right: 4px;
+}
+
+.spinner-group input[type="number"] {
+    background-color: transparent;
     color: black;
     border: none;
     padding: 10px;
     font-size: 18px;
     font-weight: 900;
     text-align: center;
+    width: 40px;
     outline: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 0 #cccccc;
     -moz-appearance: textfield; 
 }
-.controls-row input[type="number"] {
-    width: 50px;
-    cursor: text;
+
+.spinner-group input[type="number"]::-webkit-outer-spin-button,
+.spinner-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-.controls-row input[type="file"] {
-    max-width: 220px;
-    padding: 4px;
-    cursor: default;
+.spinner-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.controls-row input[type="file"]::file-selector-button {
-    background: #f1f1f1;
-    border: 1px solid #ccc;
-    padding: 6px 12px;
-    border-radius: 4px;
+.spinner-btns button {
+    height: 16px;
+    width: 20px;
+    font-size: 8px;
+    background: #eee;
+    border: none;
     cursor: pointer;
+    border-radius: 4px;
     font-weight: bold;
 }
 
-.controls-row button:active {
-    transform: translateY(3px);
-    box-shadow: none;
-}
+.spinner-btns button:hover { background: #ddd; }
+.spinner-btns button:active { background: #ccc; transform: translateY(1px); box-shadow: none; }
+
+/* ==================================================== */
 
 .btn-action {
     display: inline-flex;
@@ -184,10 +198,7 @@ body {
     box-shadow: 0 0px 0 #1c6899;
 }
 
-/* ====================================================
-   CẬP NHẬT TRẠNG THÁI SÁNG/TỐI CỦA NÚT UNDO/REDO
-==================================================== */
-/* Khi hoạt động (Sáng) */
+/* Trạng thái nút Undo/Redo */
 .btn-red {
     background-color: #f14c4f; 
     color: #ffffff; 
@@ -197,14 +208,12 @@ body {
     transform: translateY(4px);
     box-shadow: 0 0px 0 #852d1b;
 }
-
-/* Khi bị vô hiệu hóa (Tối) */
 .btn-red:disabled {
     background-color: #90697c; 
     color: #a2bcd2; 
     box-shadow: 0 4px 0 #50555e;
     cursor: not-allowed;
-    transform: none; /* Không cho lún xuống khi bấm */
+    transform: none; 
 }
 
 .image-section-title {
@@ -332,8 +341,25 @@ body {
 </div>
 
 <div class="controls-row">
-    <label class="text-label">Hàng: <input type="number" id="rows" min="1"></label>
-    <label class="text-label">Cột: <input type="number" id="cols" min="1"></label>
+    <label class="text-label">Hàng: 
+        <div class="spinner-group">
+            <input type="number" id="rows" min="1">
+            <div class="spinner-btns">
+                <button onclick="changeValue('rows', 1)">▲</button>
+                <button onclick="changeValue('rows', -1)">▼</button>
+            </div>
+        </div>
+    </label>
+    
+    <label class="text-label">Cột: 
+        <div class="spinner-group">
+            <input type="number" id="cols" min="1">
+            <div class="spinner-btns">
+                <button onclick="changeValue('cols', 1)">▲</button>
+                <button onclick="changeValue('cols', -1)">▼</button>
+            </div>
+        </div>
+    </label>
     
     <button onclick="createGrid(false)" class="btn-action btn-blue">🔄 Tạo bàn</button>
     <button id="btnUndo" onclick="undo()" class="btn-action btn-red" disabled>↩️ Undo</button>
@@ -346,15 +372,15 @@ body {
 
 <script>
 const defaultImages = [
-    "File anh/1.png",
-    "File anh/2.png",
-    "File anh/3.png",
-    "File anh/4.png",
-    "File anh/5.png",
-    "File anh/6.png",
-    "File anh/7.png",
-    "File anh/8.png",
-    "File anh/9.png"
+    "Anh/1.png",
+    "Anh/2.png",
+    "Anh/3.png",
+    "Anh/4.png",
+    "Anh/5.png",
+    "Anh/6.png",
+    "Anh/7.png",
+    "Anh/8.png",
+    "Anh/9.png"
 ];
 
 let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
@@ -369,6 +395,14 @@ const sheetBar = document.getElementById("sheetBar");
 const rowsInput = document.getElementById("rows");
 const colsInput = document.getElementById("cols");
 
+// Hàm hỗ trợ tăng giảm giá trị ô input
+function changeValue(id, delta) {
+    const input = document.getElementById(id);
+    let val = parseInt(input.value || 0) + delta;
+    if (val < 1) val = 1;
+    input.value = val;
+}
+
 sheets.forEach(s => {
     if (!s.images || s.images.length === 0) {
         s.images = [...defaultImages];
@@ -379,7 +413,6 @@ function save() {
     localStorage.setItem("sheets", JSON.stringify(sheets));
 }
 
-// Cập nhật trạng thái màu sắc của 2 nút bấm
 function updateUndoRedoButtons() {
     const btnUndo = document.getElementById("btnUndo");
     const btnRedo = document.getElementById("btnRedo");
@@ -448,7 +481,7 @@ function loadSheet() {
     redoStack = [];
 
     createGrid(true);
-    updateUndoRedoButtons(); // Cập nhật nút ngay khi load
+    updateUndoRedoButtons(); 
     renderSheets();
 }
 
@@ -511,7 +544,7 @@ function createGrid(load = false) {
         grid.appendChild(cell);
     });
 
-    updateUndoRedoButtons(); // Đảm bảo nút được làm mới
+    updateUndoRedoButtons(); 
 }
 
 function place(i) {
@@ -537,7 +570,7 @@ function place(i) {
 
     match(selectedImage);
     save(); 
-    updateUndoRedoButtons(); // Cập nhật nút sau khi đặt thẻ
+    updateUndoRedoButtons(); 
 }
 
 function match(src) {
@@ -597,7 +630,7 @@ function undo() {
         sheets[currentSheet].cells = JSON.parse(undoStack.pop());
         save(); 
         updateGridDOM(); 
-        updateUndoRedoButtons(); // Cập nhật sau khi Hoàn tác
+        updateUndoRedoButtons(); 
     }
 }
 
@@ -608,7 +641,7 @@ function redo() {
         sheets[currentSheet].cells = JSON.parse(redoStack.pop());
         save(); 
         updateGridDOM();
-        updateUndoRedoButtons(); // Cập nhật sau khi Làm lại
+        updateUndoRedoButtons(); 
     }
 }
 
@@ -623,7 +656,6 @@ document.addEventListener("keydown", e => {
     }
 });
 
-// Chạy khởi tạo ban đầu
 if (!sheets.length) addSheet();
 else { renderSheets(); loadSheet(); }
 </script>
