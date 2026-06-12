@@ -18,7 +18,6 @@ body {
     padding: 20px;
 }
 
-/* Ép buộc tất cả nút bấm và ô nhập dùng chung font chữ với toàn trang */
 button, input {
     font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
 }
@@ -29,7 +28,7 @@ button, input {
     font-weight: 900;
     font-style: italic; 
     color: #fcfcfc; 
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     letter-spacing: 2px;
     text-shadow: 
         -2px -2px 0 #3a3a3a,  2px -2px 0 #3a3a3a, -2px  2px 0 #3a3a3a, 2px  2px 0 #3a3a3a,
@@ -38,15 +37,26 @@ button, input {
 }
 
 /* ====================================================
-   KHU VỰC TABS & CÁC NÚT QUẢN LÝ ACC
+   KHU VỰC TABS & NÚT QUẢN LÝ
 ==================================================== */
-.sheet-bar {
+.sheet-tabs-container {
     display: flex;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    max-width: 90%; 
+}
+
+.sheet-actions-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.15); 
+    padding: 10px 20px;
+    border-radius: 16px;
 }
 
 .sheet {
@@ -68,292 +78,120 @@ button, input {
     box-shadow: 0 4px 0 #cccccc;
 }
 
-.sheet:active {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #cccccc;
+.sheet:active { transform: translateY(4px); box-shadow: 0 0px 0 #cccccc; }
+
+.btn-add-acc { background: #4cd16b; color: white; border: none; padding: 8px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 900; box-shadow: 0 4px 0 #38a051; transition: transform 0.1s, box-shadow 0.1s; }
+.btn-add-acc:active { transform: translateY(4px); box-shadow: 0 0px 0 #38a051; }
+
+.btn-rename-acc { background: #f39c12; color: white; border: none; padding: 8px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 900; box-shadow: 0 4px 0 #d68910; transition: transform 0.1s, box-shadow 0.1s; }
+.btn-rename-acc:active { transform: translateY(4px); box-shadow: 0 0px 0 #d68910; }
+
+.btn-delete-acc { background: #ff4757; color: white; border: none; padding: 8px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 900; box-shadow: 0 4px 0 #c0392b; transition: transform 0.1s, box-shadow 0.1s; }
+.btn-delete-acc:active { transform: translateY(4px); box-shadow: 0 0px 0 #c0392b; }
+
+.btn-delete-multi { background: #c23616; color: white; border: none; padding: 8px 20px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 900; box-shadow: 0 4px 0 #8c2810; transition: transform 0.1s, box-shadow 0.1s; }
+.btn-delete-multi:active { transform: translateY(4px); box-shadow: 0 0px 0 #8c2810; }
+
+/* ====================================================
+   POPUP QUẢN LÝ XÓA ACC (MODAL) VÀ HIỆU ỨNG TRƯỢT
+==================================================== */
+.modal-overlay {
+    display: none; 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); 
+    justify-content: center; align-items: center; 
+    z-index: 1000;
+    backdrop-filter: blur(3px);
 }
 
-.btn-add-acc {
-    background: #4cd16b;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 900;
-    box-shadow: 0 4px 0 #38a051;
-    transition: transform 0.1s, box-shadow 0.1s;
-}
-.btn-add-acc:active {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #38a051;
+.modal-content {
+    background: #5aa8e8; 
+    padding: 25px; 
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    width: 320px; 
+    max-height: 80vh; 
+    display: flex; flex-direction: column;
+    border: 4px solid #fff;
 }
 
-.btn-rename-acc {
-    background: #f39c12;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 900;
-    box-shadow: 0 4px 0 #d68910;
-    transition: transform 0.1s, box-shadow 0.1s;
-}
-.btn-rename-acc:active {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #d68910;
+.modal-title {
+    font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-.btn-delete-acc {
-    background: #ff4757;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 900;
-    box-shadow: 0 4px 0 #c0392b;
-    transition: transform 0.1s, box-shadow 0.1s;
+.acc-list {
+    display: flex; flex-direction: column; gap: 8px; 
+    overflow-y: auto; margin-bottom: 20px;
+    background: rgba(255,255,255,0.2); padding: 10px; border-radius: 12px;
 }
-.btn-delete-acc:active {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #c0392b;
+
+.acc-item {
+    display: flex; align-items: center; gap: 12px; 
+    background: #fff; color: #333;
+    padding: 10px 15px; border-radius: 8px; 
+    cursor: pointer; font-weight: bold; font-size: 16px;
+    box-shadow: 0 2px 0 #ccc;
+    user-select: none; /* Tránh bôi đen text khi giữ Shift hoặc vuốt */
+    -webkit-user-select: none;
 }
+
+.acc-checkbox { 
+    width: 20px; height: 20px; 
+    cursor: pointer; accent-color: #ff4757; 
+    touch-action: none; /* Khóa cuộn trang khi chạm vào checkbox để vuốt mượt hơn */
+}
+
+.modal-actions { display: flex; gap: 10px; }
+.btn-modal {
+    flex: 1; border: none; padding: 12px; border-radius: 10px; 
+    font-size: 16px; font-weight: 900; cursor: pointer; transition: 0.1s;
+}
+.btn-cancel { background: #e6e6e6; color: #333; box-shadow: 0 4px 0 #b3b3b3; }
+.btn-cancel:active { transform: translateY(4px); box-shadow: 0 0 0 #b3b3b3; }
+.btn-confirm { background: #ff4757; color: white; box-shadow: 0 4px 0 #c0392b; }
+.btn-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 #c0392b; }
 
 /* ==================================================== */
 
-.controls-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    background: rgba(41, 128, 185, 0.4); 
-    padding: 15px 30px;
-    border-radius: 16px; 
-}
+.controls-row { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; background: rgba(41, 128, 185, 0.4); padding: 15px 30px; border-radius: 16px; }
+.controls-row label { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
 
-.controls-row label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 900;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
-}
-
-.spinner-group {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 0 #cccccc;
-    padding-right: 4px;
-}
-
-.spinner-group input[type="number"] {
-    background-color: transparent;
-    color: black;
-    border: none;
-    padding: 10px;
-    font-size: 18px;
-    font-weight: 900;
-    text-align: center;
-    width: 40px;
-    outline: none;
-    -moz-appearance: textfield; 
-}
-
-.spinner-group input[type="number"]::-webkit-outer-spin-button,
-.spinner-group input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.spinner-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.spinner-btns button {
-    height: 16px;
-    width: 20px;
-    font-size: 8px;
-    background: #eee;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
+.spinner-group { display: flex; align-items: center; background-color: white; border-radius: 10px; box-shadow: 0 4px 0 #cccccc; padding-right: 4px; }
+.spinner-group input[type="number"] { background-color: transparent; color: black; border: none; padding: 10px; font-size: 18px; font-weight: 900; text-align: center; width: 40px; outline: none; -moz-appearance: textfield; }
+.spinner-group input[type="number"]::-webkit-outer-spin-button, .spinner-group input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.spinner-btns { display: flex; flex-direction: column; gap: 2px; }
+.spinner-btns button { height: 16px; width: 20px; font-size: 8px; background: #eee; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
 .spinner-btns button:hover { background: #ddd; }
 .spinner-btns button:active { background: #ccc; transform: translateY(1px); box-shadow: none; }
 
-.btn-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 900;
-    cursor: pointer;
-    outline: none;
-    border-radius: 10px;
-    transition: transform 0.1s, box-shadow 0.1s;
-}
+.btn-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; padding: 10px 20px; font-size: 16px; font-weight: 900; cursor: pointer; outline: none; border-radius: 10px; transition: transform 0.1s, box-shadow 0.1s; }
+.btn-blue { background-color: #3eb0ff; color: white; box-shadow: 0 4px 0 #1d78b8; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); transition: all 0.2s ease; }
+.btn-blue:hover { background-color: #5bc0ff; box-shadow: 0 4px 0 #1d78b8, 0 0 15px rgba(62, 176, 255, 0.7); }
+.btn-blue:active { transform: translateY(4px); box-shadow: 0 0px 0 #1d78b8; }
 
-.btn-blue {
-    background-color: #3eb0ff; 
-    color: white;
-    box-shadow: 0 4px 0 #1d78b8;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
-}
-.btn-blue:hover {
-    background-color: #5bc0ff; 
-    box-shadow: 0 4px 0 #1d78b8, 0 0 15px rgba(62, 176, 255, 0.7); 
-}
-.btn-blue:active {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #1d78b8;
-}
+.btn-red { background-color: #f14c4f; color: #ffffff; box-shadow: 0 4px 0 #852d1b; }
+.btn-red:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0 #852d1b; }
+.btn-red:disabled { background-color: #90697c; color: #a2bcd2; box-shadow: 0 4px 0 #50555e; cursor: not-allowed; transform: none; }
 
-.btn-red {
-    background-color: #f14c4f; 
-    color: #ffffff; 
-    box-shadow: 0 4px 0 #852d1b;
-}
-.btn-red:active:not(:disabled) {
-    transform: translateY(4px);
-    box-shadow: 0 0px 0 #852d1b;
-}
-.btn-red:disabled {
-    background-color: #90697c; 
-    color: #a2bcd2; 
-    box-shadow: 0 4px 0 #50555e;
-    cursor: not-allowed;
-    transform: none; 
-}
-
-.image-section-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5); 
-}
-
-.image-bar {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 25px;
-}
-
+.image-section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+.image-bar { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 25px; }
 .image-box { position: relative; }
+.image-bar img { width: 60px; height: 80px; background: #fff; border-radius: 8px; cursor: pointer; border: 3px solid transparent; object-fit: cover; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+.image-bar img.selected { border-color: #ffd700; box-shadow: 0 0 15px #ffd700; transform: translateY(-5px); }
 
-.image-bar img {
-    width: 60px;
-    height: 80px;
-    background: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 3px solid transparent;
-    object-fit: cover;
-    transition: 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-}
-
-.image-bar img.selected {
-    border-color: #ffd700; 
-    box-shadow: 0 0 15px #ffd700;
-    transform: translateY(-5px);
-}
-
-.grid {
-    display: grid;
-    gap: 10px;
-    justify-content: center;
-    padding: 20px;
-}
-
-.cell {
-    width: 83px;
-    height: 103px;
-    perspective: 1000px; 
-    cursor: pointer;
-}
-
-.cell-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
-}
-
-.cell.flipped .cell-inner {
-    transform: rotateY(180deg);
-}
-
-.cell:active .cell-inner {
-    transform: translateY(4px);
-}
-.cell.flipped:active .cell-inner {
-    transform: translateY(4px) rotateY(180deg);
-}
-
-.cell-front, .cell-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden; 
-    border-radius: 12px; 
-    box-sizing: border-box;
-}
-
-.cell-front {
-    background-color: #64c2ed; 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='white' stroke-width='6' stroke-linecap='round' fill='none'%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3Cline x1='40' y1='10' x2='40' y2='16'/%3E%3Cline x1='18.8' y1='18.8' x2='23' y2='23'/%3E%3Cline x1='10' y1='40' x2='16' y2='40'/%3E%3Cline x1='56.9' y1='23' x2='61.2' y2='18.8'/%3E%3Cline x1='70' y1='40' x2='64' y2='40'/%3E%3C/g%3E%3Cpath fill='white' d='M35 55 A 15 15 0 0 1 60 40 A 20 20 0 0 1 85 55 A 12 12 0 0 1 75 75 L 30 75 A 18 18 0 0 1 35 55 Z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 40px; 
-    border: 4px solid #89d8fb; 
-    box-shadow: 0 5px 0 #3b91c4, inset 0 0 0 2px #ffffff; 
-    transition: box-shadow 0.1s;
-}
-
-.cell:active .cell-front {
-    box-shadow: 0 0px 0 #3b91c4, inset 0 0 0 2px #ffffff;
-}
-
-.cell-back {
-    transform: rotateY(180deg); 
-    background: transparent;
-}
-
-.cell-back img {
-    width: 100%; 
-    height: 100%;
-    object-fit: cover; 
-    border-radius: 12px; 
-    background-color: white; 
-}
-
-.cell.matched { 
-    visibility: hidden; 
-    opacity: 0;
-    transition: opacity 0.3s ease-out, visibility 0.3s;
-}
+.grid { display: grid; gap: 10px; justify-content: center; padding: 20px; }
+.cell { width: 83px; height: 103px; perspective: 1000px; cursor: pointer; }
+.cell-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+.cell.flipped .cell-inner { transform: rotateY(180deg); }
+.cell:active .cell-inner { transform: translateY(4px); }
+.cell.flipped:active .cell-inner { transform: translateY(4px) rotateY(180deg); }
+.cell-front, .cell-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; box-sizing: border-box; }
+.cell-front { background-color: #64c2ed; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg stroke='white' stroke-width='6' stroke-linecap='round' fill='none'%3E%3Ccircle cx='40' cy='40' r='16'/%3E%3Cline x1='40' y1='10' x2='40' y2='16'/%3E%3Cline x1='18.8' y1='18.8' x2='23' y2='23'/%3E%3Cline x1='10' y1='40' x2='16' y2='40'/%3E%3Cline x1='56.9' y1='23' x2='61.2' y2='18.8'/%3E%3Cline x1='70' y1='40' x2='64' y2='40'/%3E%3C/g%3E%3Cpath fill='white' d='M35 55 A 15 15 0 0 1 60 40 A 20 20 0 0 1 85 55 A 12 12 0 0 1 75 75 L 30 75 A 18 18 0 0 1 35 55 Z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 40px; border: 4px solid #89d8fb; box-shadow: 0 5px 0 #3b91c4, inset 0 0 0 2px #ffffff; transition: box-shadow 0.1s; }
+.cell:active .cell-front { box-shadow: 0 0px 0 #3b91c4, inset 0 0 0 2px #ffffff; }
+.cell-back { transform: rotateY(180deg); background: transparent; }
+.cell-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; background-color: white; }
+.cell.matched { visibility: hidden; opacity: 0; transition: opacity 0.3s ease-out, visibility 0.3s; }
 </style>
 </head>
 
@@ -361,12 +199,14 @@ button, input {
 
 <div class="header">Dự báo thời tiết của Windy</div>
 
-<div class="sheet-bar">
-    <div id="sheetBar" style="display: flex; gap: 12px;"></div>
+<div class="sheet-actions-container">
     <button onclick="addSheet()" class="btn-add-acc">Thêm acc</button>
     <button onclick="renameCurrentSheet()" class="btn-rename-acc">Đổi tên</button>
     <button onclick="deleteCurrentSheet()" class="btn-delete-acc">Xóa acc</button>
+    <button onclick="openDeleteModal()" class="btn-delete-multi">Xóa nhiều</button>
 </div>
+
+<div id="sheetBar" class="sheet-tabs-container"></div>
 
 <div class="controls-row">
     <label class="text-label">Hàng: 
@@ -398,17 +238,22 @@ button, input {
 <div class="image-bar" id="imageBar"></div>
 <div id="grid" class="grid"></div>
 
+<div id="deleteModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-title">Chọn acc cần xóa</div>
+        <div class="acc-list" id="multiDeleteList">
+            </div>
+        <div class="modal-actions">
+            <button class="btn-modal btn-cancel" onclick="closeDeleteModal()">Hủy bỏ</button>
+            <button class="btn-modal btn-confirm" onclick="confirmMultiDelete()">Xóa ngay</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const defaultImages = [
-    "Anh/1.png",
-    "Anh/2.png",
-    "Anh/3.png",
-    "Anh/4.png",
-    "Anh/5.png",
-    "Anh/6.png",
-    "Anh/7.png",
-    "Anh/8.png",
-    "Anh/9.png"
+    "Anh/1.png", "Anh/2.png", "Anh/3.png", "Anh/4.png", 
+    "Anh/5.png", "Anh/6.png", "Anh/7.png", "Anh/8.png", "Anh/9.png"
 ];
 
 let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
@@ -416,6 +261,7 @@ let currentSheet = 0;
 let selectedImage = null;
 let undoStack = [], redoStack = [];
 let matchTimeout = null; 
+let lastCheckedCheckbox = null; // Biến ghi nhớ cho Shift-Click PC
 
 const grid = document.getElementById("grid");
 const imageBar = document.getElementById("imageBar");
@@ -426,7 +272,6 @@ const colsInput = document.getElementById("cols");
 function validateInput(id) {
     const input = document.getElementById(id);
     let val = parseInt(input.value);
-    
     if (isNaN(val)) return; 
     if (val > 10) input.value = 10;
     if (val < 1) input.value = 1;
@@ -435,22 +280,16 @@ function validateInput(id) {
 function changeValue(id, delta) {
     const input = document.getElementById(id);
     let val = parseInt(input.value || 0) + delta;
-    
     if (val > 10) val = 10;
     if (val < 1) val = 1;
-    
     input.value = val;
 }
 
 sheets.forEach(s => {
-    if (!s.images || s.images.length === 0) {
-        s.images = [...defaultImages];
-    }
+    if (!s.images || s.images.length === 0) s.images = [...defaultImages];
 });
 
-function save() {
-    localStorage.setItem("sheets", JSON.stringify(sheets));
-}
+function save() { localStorage.setItem("sheets", JSON.stringify(sheets)); }
 
 function updateUndoRedoButtons() {
     const btnUndo = document.getElementById("btnUndo");
@@ -465,16 +304,8 @@ function renderSheets() {
         const div = document.createElement("div");
         div.className = "sheet" + (i === currentSheet ? " active" : "");
         div.textContent = s.name;
-
-        div.onclick = () => {
-            currentSheet = i;
-            loadSheet();
-        };
-
-        div.ondblclick = () => {
-            renameCurrentSheet();
-        };
-
+        div.onclick = () => { currentSheet = i; loadSheet(); };
+        div.ondblclick = () => { renameCurrentSheet(); };
         sheetBar.appendChild(div);
     });
 }
@@ -482,162 +313,192 @@ function renderSheets() {
 function addSheet() {
     sheets.push({
         name: "Acc " + (sheets.length + 1),
-        rows: 4, cols: 5,
-        cells: [], 
-        images: [...defaultImages]
+        rows: 4, cols: 5, cells: [], images: [...defaultImages]
     });
     currentSheet = sheets.length - 1;
     save(); renderSheets(); loadSheet();
 }
 
 function deleteSheet(index) {
-    if (sheets.length === 1) {
-        alert("Phải có ít nhất 1 acc!");
-        return;
-    }
-    if (!confirm("Xóa acc này?")) return;
-
+    if (sheets.length === 1) { alert("Phải có ít nhất 1 acc!"); return; }
+    if (!confirm("Bạn chắc chưa?")) return;
     sheets.splice(index, 1);
     if (currentSheet >= sheets.length) currentSheet = sheets.length - 1;
-
     save(); renderSheets(); loadSheet();
 }
 
-function deleteCurrentSheet() {
-    deleteSheet(currentSheet);
+function deleteCurrentSheet() { deleteSheet(currentSheet); }
+
+/* ==== LOGIC POPUP XÓA NHIỀU ACC ==== */
+function openDeleteModal() {
+    const list = document.getElementById("multiDeleteList");
+    list.innerHTML = "";
+    lastCheckedCheckbox = null; // Reset biến ghi nhớ của PC khi mở
+
+    sheets.forEach((s, i) => {
+        const label = document.createElement("label");
+        label.className = "acc-item";
+        
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = i;
+        cb.className = "acc-checkbox";
+
+        // Logic xử lý Shift-Click trên PC
+        cb.addEventListener('click', function(e) {
+            let checkboxes = Array.from(document.querySelectorAll('.acc-checkbox'));
+            if (e.shiftKey && lastCheckedCheckbox) {
+                let start = checkboxes.indexOf(lastCheckedCheckbox);
+                let end = checkboxes.indexOf(this);
+                let min = Math.min(start, end);
+                let max = Math.max(start, end);
+                for (let j = min; j <= max; j++) {
+                    checkboxes[j].checked = this.checked;
+                }
+            }
+            lastCheckedCheckbox = this;
+        });
+
+        const span = document.createElement("span");
+        span.textContent = s.name;
+        span.style.pointerEvents = "none"; // Để cảm ứng chạm chuẩn vào nhãn
+
+        label.appendChild(cb);
+        label.appendChild(span);
+        list.appendChild(label);
+    });
+    document.getElementById("deleteModal").style.display = "flex";
 }
+
+function closeDeleteModal() { document.getElementById("deleteModal").style.display = "none"; }
+
+function confirmMultiDelete() {
+    const checkboxes = document.querySelectorAll('#multiDeleteList input[type="checkbox"]:checked');
+    if (checkboxes.length === 0) { alert("Vui lòng chọn ít nhất 1 acc để xóa!"); return; }
+    if (checkboxes.length === sheets.length) { alert("Phải giữ lại ít nhất 1 acc!!!"); return; }
+    if (!confirm(`Bạn có chắc chắn muốn xoá ${checkboxes.length} acc đã chọn chứ?`)) return;
+
+    const indicesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    sheets = sheets.filter((_, idx) => !indicesToDelete.includes(idx));
+    
+    currentSheet = 0; 
+    save(); closeDeleteModal(); renderSheets(); loadSheet();
+}
+
+/* Logic xử lý Vuốt/Trượt nhiều Checkbox trên Điện Thoại (Mobile Swipe) */
+const multiDeleteList = document.getElementById("multiDeleteList");
+let isDraggingModal = false;
+let modalDragState = false;
+
+multiDeleteList.addEventListener('touchstart', (e) => {
+    // Chỉ kích hoạt chế độ "Vuốt để chọn" nếu chạm chính xác vào ô vuông Checkbox
+    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+        isDraggingModal = true;
+        modalDragState = !e.target.checked; 
+    }
+}, {passive: true});
+
+multiDeleteList.addEventListener('touchmove', (e) => {
+    if (!isDraggingModal) return; // Nếu chạm vào phần chữ thì sẽ cuộn bình thường, không bôi đen
+    
+    if (e.cancelable) e.preventDefault(); // Ngăn trình duyệt cuộn trang khi đang vuốt chọn ô
+    
+    const touch = e.touches[0];
+    const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!elem) return;
+    
+    const label = elem.closest('.acc-item');
+    if (label) {
+        const cb = label.querySelector('.acc-checkbox');
+        if (cb && cb.checked !== modalDragState) {
+            cb.checked = modalDragState;
+            lastCheckedCheckbox = cb; // Đồng bộ với Shift-Click để không bị lỗi chéo
+        }
+    }
+}, {passive: false});
+
+multiDeleteList.addEventListener('touchend', () => { isDraggingModal = false; });
+/* ==================================== */
 
 function renameCurrentSheet() {
     const currentName = sheets[currentSheet].name;
     const newName = prompt("Nhập tên mới cho acc này:", currentName);
-    
     if (newName && newName.trim() !== "") {
         sheets[currentSheet].name = newName.trim();
-        save();
-        renderSheets();
+        save(); renderSheets();
     }
 }
 
 function loadSheet() {
     const s = sheets[currentSheet];
-    
     rowsInput.value = Math.min(Math.max(s.rows || 4, 1), 10);
     colsInput.value = Math.min(Math.max(s.cols || 5, 1), 10);
-
     imageBar.innerHTML = "";
     s.images.forEach(addImage);
-
-    undoStack = [];
-    redoStack = [];
-
-    createGrid(true);
-    updateUndoRedoButtons(); 
-    renderSheets();
+    undoStack = []; redoStack = [];
+    createGrid(true); updateUndoRedoButtons(); renderSheets();
 }
 
 function addImage(src) {
-    const box = document.createElement("div");
-    box.className = "image-box";
-
-    const img = document.createElement("img");
-    img.src = src;
+    const box = document.createElement("div"); box.className = "image-box";
+    const img = document.createElement("img"); img.src = src;
     img.onclick = () => selectImage(img);
-
-    box.append(img);
-    imageBar.appendChild(box);
+    box.append(img); imageBar.appendChild(box);
 }
 
 function selectImage(img) {
     document.querySelectorAll(".image-bar img").forEach(i => i.classList.remove("selected"));
-    img.classList.add("selected");
-    selectedImage = img.src;
+    img.classList.add("selected"); selectedImage = img.src;
 }
 
 function createGrid(load = false) {
     const s = sheets[currentSheet];
     if (!load) {
-        validateInput("rows");
-        validateInput("cols");
-        
-        s.rows = +rowsInput.value || 4;
-        s.cols = +colsInput.value || 5;
+        validateInput("rows"); validateInput("cols");
+        s.rows = +rowsInput.value || 4; s.cols = +colsInput.value || 5;
         s.cells = Array(s.rows * s.cols).fill(null);
-        undoStack = [];
-        redoStack = [];
-        save();
+        undoStack = []; redoStack = []; save();
     }
-
     grid.innerHTML = "";
     grid.style.gridTemplateColumns = `repeat(${s.cols}, 83px)`;
-
     s.cells.forEach((c, i) => {
         const cell = document.createElement("div");
         cell.className = "cell" + (c?.img ? " flipped" : "") + (c?.matched ? " matched" : "");
-        
-        const inner = document.createElement("div");
-        inner.className = "cell-inner";
-
-        const front = document.createElement("div");
-        front.className = "cell-front";
-
-        const back = document.createElement("div");
-        back.className = "cell-back";
-        
+        const inner = document.createElement("div"); inner.className = "cell-inner";
+        const front = document.createElement("div"); front.className = "cell-front";
+        const back = document.createElement("div"); back.className = "cell-back";
         if (c?.img) {
             const im = document.createElement("img");
-            im.src = c.img;
-            back.appendChild(im);
+            im.src = c.img; back.appendChild(im);
         }
-        
-        inner.appendChild(front);
-        inner.appendChild(back);
-        cell.appendChild(inner);
-
+        inner.appendChild(front); inner.appendChild(back); cell.appendChild(inner);
         cell.onclick = () => place(i);
         grid.appendChild(cell);
     });
-
     updateUndoRedoButtons(); 
 }
 
 function place(i) {
     const s = sheets[currentSheet];
     if (!selectedImage || s.cells[i]) return;
-
     undoStack.push(JSON.stringify(s.cells));
     redoStack = [];
-
     s.cells[i] = { img: selectedImage };
-
     const cellNodes = document.querySelectorAll('.cell');
     const targetCell = cellNodes[i];
     const backDiv = targetCell.querySelector('.cell-back');
-    
     const im = document.createElement("img");
-    im.src = selectedImage;
-    backDiv.appendChild(im);
-
-    setTimeout(() => {
-        targetCell.classList.add("flipped");
-    }, 10);
-
-    match(selectedImage);
-    save(); 
-    updateUndoRedoButtons(); 
+    im.src = selectedImage; backDiv.appendChild(im);
+    setTimeout(() => { targetCell.classList.add("flipped"); }, 10);
+    match(selectedImage); save(); updateUndoRedoButtons(); 
 }
 
 function match(src) {
     const s = sheets[currentSheet];
-    const same = s.cells
-        .map((c, i) => ({ c, i }))
-        .filter(o => o.c && o.c.img === src && !o.c.matched);
-
+    const same = s.cells.map((c, i) => ({ c, i })).filter(o => o.c && o.c.img === src && !o.c.matched);
     if (same.length === 2) {
         matchTimeout = setTimeout(() => {
-            same.forEach(o => {
-                o.c.matched = true;
-                document.querySelectorAll('.cell')[o.i].classList.add("matched"); 
-            });
+            same.forEach(o => { o.c.matched = true; document.querySelectorAll('.cell')[o.i].classList.add("matched"); });
             save(); 
         }, 500); 
     }
@@ -646,33 +507,18 @@ function match(src) {
 function updateGridDOM() {
     const s = sheets[currentSheet];
     const cellNodes = document.querySelectorAll('.cell');
-
     s.cells.forEach((c, i) => {
         const targetCell = cellNodes[i];
         const backDiv = targetCell.querySelector('.cell-back');
-
         if (c && c.img) {
             let imgEl = backDiv.querySelector('img');
-            if (!imgEl) {
-                imgEl = document.createElement("img");
-                backDiv.appendChild(imgEl);
-            }
-            imgEl.src = c.img;
-            targetCell.classList.add("flipped");
+            if (!imgEl) { imgEl = document.createElement("img"); backDiv.appendChild(imgEl); }
+            imgEl.src = c.img; targetCell.classList.add("flipped");
         } else {
             targetCell.classList.remove("flipped");
-            setTimeout(() => {
-                if (!targetCell.classList.contains("flipped")) {
-                    backDiv.innerHTML = '';
-                }
-            }, 400); 
+            setTimeout(() => { if (!targetCell.classList.contains("flipped")) { backDiv.innerHTML = ''; } }, 400); 
         }
-
-        if (c && c.matched) {
-            targetCell.classList.add("matched");
-        } else {
-            targetCell.classList.remove("matched");
-        }
+        if (c && c.matched) { targetCell.classList.add("matched"); } else { targetCell.classList.remove("matched"); }
     });
 }
 
@@ -681,9 +527,7 @@ function undo() {
         clearTimeout(matchTimeout); 
         redoStack.push(JSON.stringify(sheets[currentSheet].cells));
         sheets[currentSheet].cells = JSON.parse(undoStack.pop());
-        save(); 
-        updateGridDOM(); 
-        updateUndoRedoButtons(); 
+        save(); updateGridDOM(); updateUndoRedoButtons(); 
     }
 }
 
@@ -692,25 +536,16 @@ function redo() {
         clearTimeout(matchTimeout);
         undoStack.push(JSON.stringify(sheets[currentSheet].cells));
         sheets[currentSheet].cells = JSON.parse(redoStack.pop());
-        save(); 
-        updateGridDOM();
-        updateUndoRedoButtons(); 
+        save(); updateGridDOM(); updateUndoRedoButtons(); 
     }
 }
 
 document.addEventListener("keydown", e => {
-    if (e.ctrlKey && e.key === "z") {
-        e.preventDefault();
-        undo();
-    }
-    if (e.ctrlKey && e.key === "y") {
-        e.preventDefault();
-        redo();
-    }
+    if (e.ctrlKey && e.key === "z") { e.preventDefault(); undo(); }
+    if (e.ctrlKey && e.key === "y") { e.preventDefault(); redo(); }
 });
 
-if (!sheets.length) addSheet();
-else { renderSheets(); loadSheet(); }
+if (!sheets.length) addSheet(); else { renderSheets(); loadSheet(); }
 </script>
 
 </body>
