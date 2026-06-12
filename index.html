@@ -18,6 +18,11 @@ body {
     padding: 20px;
 }
 
+/* Ép buộc tất cả nút bấm và ô nhập dùng chung font chữ với toàn trang */
+button, input {
+    font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+}
+
 .header {
     font-size: 46px; 
     font-family: 'Arial Black', 'Segoe UI Black', Impact, sans-serif; 
@@ -32,6 +37,9 @@ body {
          0    6px 0 #3a3a3a,  2px  6px 0 #3a3a3a, -2px  6px 0 #3a3a3a;
 }
 
+/* ====================================================
+   KHU VỰC TABS & CÁC NÚT QUẢN LÝ ACC
+==================================================== */
 .sheet-bar {
     display: flex;
     gap: 12px;
@@ -82,6 +90,23 @@ body {
     box-shadow: 0 0px 0 #38a051;
 }
 
+.btn-rename-acc {
+    background: #f39c12;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 4px 0 #d68910;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-rename-acc:active {
+    transform: translateY(4px);
+    box-shadow: 0 0px 0 #d68910;
+}
+
 .btn-delete-acc {
     background: #ff4757;
     color: white;
@@ -98,6 +123,8 @@ body {
     transform: translateY(4px);
     box-shadow: 0 0px 0 #c0392b;
 }
+
+/* ==================================================== */
 
 .controls-row {
     display: flex;
@@ -120,9 +147,6 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
 }
 
-/* ====================================================
-   CẬP NHẬT: CSS CHO KHỐI TĂNG GIẢM SỐ LƯỢNG (SPINNER)
-==================================================== */
 .spinner-group {
     display: flex;
     align-items: center;
@@ -171,8 +195,6 @@ body {
 .spinner-btns button:hover { background: #ddd; }
 .spinner-btns button:active { background: #ccc; transform: translateY(1px); box-shadow: none; }
 
-/* ==================================================== */
-
 .btn-action {
     display: inline-flex;
     align-items: center;
@@ -189,16 +211,21 @@ body {
 }
 
 .btn-blue {
-    background-color: #268bcc; 
+    background-color: #3eb0ff; 
     color: white;
-    box-shadow: 0 4px 0 #1c6899;
+    box-shadow: 0 4px 0 #1d78b8;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+.btn-blue:hover {
+    background-color: #5bc0ff; 
+    box-shadow: 0 4px 0 #1d78b8, 0 0 15px rgba(62, 176, 255, 0.7); 
 }
 .btn-blue:active {
     transform: translateY(4px);
-    box-shadow: 0 0px 0 #1c6899;
+    box-shadow: 0 0px 0 #1d78b8;
 }
 
-/* Trạng thái nút Undo/Redo */
 .btn-red {
     background-color: #f14c4f; 
     color: #ffffff; 
@@ -336,14 +363,15 @@ body {
 
 <div class="sheet-bar">
     <div id="sheetBar" style="display: flex; gap: 12px;"></div>
-    <button onclick="addSheet()" class="btn-add-acc">➕ Thêm acc</button>
-    <button onclick="deleteCurrentSheet()" class="btn-delete-acc">🗑️ Xóa acc</button>
+    <button onclick="addSheet()" class="btn-add-acc">Thêm acc</button>
+    <button onclick="renameCurrentSheet()" class="btn-rename-acc">Đổi tên</button>
+    <button onclick="deleteCurrentSheet()" class="btn-delete-acc">Xóa acc</button>
 </div>
 
 <div class="controls-row">
     <label class="text-label">Hàng: 
         <div class="spinner-group">
-            <input type="number" id="rows" min="1">
+            <input type="number" id="rows" min="1" max="10" oninput="validateInput('rows')">
             <div class="spinner-btns">
                 <button onclick="changeValue('rows', 1)">▲</button>
                 <button onclick="changeValue('rows', -1)">▼</button>
@@ -353,7 +381,7 @@ body {
     
     <label class="text-label">Cột: 
         <div class="spinner-group">
-            <input type="number" id="cols" min="1">
+            <input type="number" id="cols" min="1" max="10" oninput="validateInput('cols')">
             <div class="spinner-btns">
                 <button onclick="changeValue('cols', 1)">▲</button>
                 <button onclick="changeValue('cols', -1)">▼</button>
@@ -372,15 +400,15 @@ body {
 
 <script>
 const defaultImages = [
-    "./Anh/1.png",
-    "./Anh/2.png",
-    "./Anh/3.png",
-    "./Anh/4.png",
-    "./Anh/5.png",
-    "./Anh/6.png",
-    "./Anh/7.png",
-    "./Anh/8.png",
-    "./Anh/9.png"
+    "Anh/1.png",
+    "Anh/2.png",
+    "Anh/3.png",
+    "Anh/4.png",
+    "Anh/5.png",
+    "Anh/6.png",
+    "Anh/7.png",
+    "Anh/8.png",
+    "Anh/9.png"
 ];
 
 let sheets = JSON.parse(localStorage.getItem("sheets") || "[]");
@@ -395,11 +423,22 @@ const sheetBar = document.getElementById("sheetBar");
 const rowsInput = document.getElementById("rows");
 const colsInput = document.getElementById("cols");
 
-// Hàm hỗ trợ tăng giảm giá trị ô input
+function validateInput(id) {
+    const input = document.getElementById(id);
+    let val = parseInt(input.value);
+    
+    if (isNaN(val)) return; 
+    if (val > 10) input.value = 10;
+    if (val < 1) input.value = 1;
+}
+
 function changeValue(id, delta) {
     const input = document.getElementById(id);
     let val = parseInt(input.value || 0) + delta;
+    
+    if (val > 10) val = 10;
     if (val < 1) val = 1;
+    
     input.value = val;
 }
 
@@ -433,8 +472,7 @@ function renderSheets() {
         };
 
         div.ondblclick = () => {
-            const n = prompt("Đổi tên", s.name);
-            if (n) { s.name = n; save(); renderSheets(); }
+            renameCurrentSheet();
         };
 
         sheetBar.appendChild(div);
@@ -469,10 +507,22 @@ function deleteCurrentSheet() {
     deleteSheet(currentSheet);
 }
 
+function renameCurrentSheet() {
+    const currentName = sheets[currentSheet].name;
+    const newName = prompt("Nhập tên mới cho acc này:", currentName);
+    
+    if (newName && newName.trim() !== "") {
+        sheets[currentSheet].name = newName.trim();
+        save();
+        renderSheets();
+    }
+}
+
 function loadSheet() {
     const s = sheets[currentSheet];
-    rowsInput.value = s.rows || 4;
-    colsInput.value = s.cols || 5;
+    
+    rowsInput.value = Math.min(Math.max(s.rows || 4, 1), 10);
+    colsInput.value = Math.min(Math.max(s.cols || 5, 1), 10);
 
     imageBar.innerHTML = "";
     s.images.forEach(addImage);
@@ -506,8 +556,11 @@ function selectImage(img) {
 function createGrid(load = false) {
     const s = sheets[currentSheet];
     if (!load) {
-        s.rows = +rowsInput.value;
-        s.cols = +colsInput.value;
+        validateInput("rows");
+        validateInput("cols");
+        
+        s.rows = +rowsInput.value || 4;
+        s.cols = +colsInput.value || 5;
         s.cells = Array(s.rows * s.cols).fill(null);
         undoStack = [];
         redoStack = [];
